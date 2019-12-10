@@ -1,0 +1,9 @@
+E:\CSharp Projects\alchemy\alchemy\bin\Debug\alchemy.exe.config
+E:\CSharp Projects\alchemy\alchemy\bin\Debug\alchemy.exe
+E:\CSharp Projects\alchemy\alchemy\bin\Debug\alchemy.pdb
+E:\CSharp Projects\alchemy\alchemy\obj\Debug\alchemy.csproj.CoreCompileInputs.cache
+E:\CSharp Projects\alchemy\alchemy\obj\Debug\alchemy.exe
+E:\CSharp Projects\alchemy\alchemy\obj\Debug\alchemy.pdb
+E:\CSharp Projects\alchemy\alchemy\obj\Debug\alchemy.csprojAssemblyReference.cache
+E:\CSharp Projects\alchemy\alchemy\obj\Debug\Interop.WMPLib.dll
+E:\CSharp Projects\alchemy\alchemy\obj\Debug\alchemy.csproj.ResolveComReference.cache
