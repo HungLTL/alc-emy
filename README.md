@@ -1,2 +1,1 @@
-# alc-emy
-popcap's alchemy remade in c# for end-of-course project
+why are you reading this lol, don't you have anything better to do
