@@ -13,9 +13,10 @@ namespace alchemy
         public int X { get; set; }
         public int Y { get; set; }
         int Width { get; set; }
-        public string rune { get; set; }
+        public string rune { get; set; } //Chứa đường dẫn đến hình ảnh các bùa. Sẽ được sử dụng cho DrawImage.
 
-        public bool IsFilled { get; set; }
+        public bool IsFilled { get; set; } // Kiểm tra ô bao giờ được ếm bùa chưa. Ảnh hưởng màu sắc và điểm. Mặc định
+        // false, tức chưa từng được ếm bùa.
 
         public Square(int x, int y, int w, string r)
         {
@@ -26,7 +27,7 @@ namespace alchemy
             IsFilled = false;
         }
 
-        public string getType()
+        public string getType() // Trả về loại bùa ô vuông đang chứa. Nếu ô rỗng, trả về chuỗi rỗng.
         {
             string type = string.Empty;
             if (rune.Contains("ari"))
@@ -70,7 +71,8 @@ namespace alchemy
             return type;
         }
 
-        public int getColor()
+        public int getColor() // Các màu khác nhau được đánh dấu bằng số 0-9. Nếu ô không có bùa, hoặc nếu là bùa
+                              // đặc biệt, trả về giá trị -1 vốn không có liên quan với màu gì hết.
         {
             int col = -1;
             if ((rune == string.Empty) || (rune == "sku.png") || (rune == "sto.png"))
@@ -98,15 +100,9 @@ namespace alchemy
             return col;
         }
 
-        public Rectangle Rectangle()
+        public Rectangle Rectangle() // Chiếu lớp Square thành Rectangle để sử dụng một số hàm trong lớp Rectangle.
         {
             return new Rectangle(X, Y, Width, Width);
-        }
-
-        public void Location(int x, int y)
-        {
-            X = x;
-            Y = y;
         }
     }
 }

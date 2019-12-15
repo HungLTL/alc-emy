@@ -1,0 +1,19 @@
+OVERVIEW:
+
+In ALC#EMY, your goal is to fill out a 9 x 9 gray grid in order to uncover the secrets of transmutation. By placing magical symbols, or "runes" on the table, you turn the tile the rune is placed on into gold, which you need to fill out the entire board in order to complete your training.
+
+RUNES:
+
+Each rune is created with a random symbol and color, with variants depending on your level of mastery in the arcane. All new runes must be placed adjacent to at least another rune, and every neighboring rune must match the newly conjured rune by shape or by color. Filling out an entire row or column will clear out every rune on that row or column, giving you more space to work with. The current active rune can be view at the top-right corner.
+
+Your performance will be noted based on how you fill out the board. Generally, you get better feedback for placing runes next to already existing runes, with the more the better. Clearing out a row or column will grant additional marks to your final scores, while runes placed on already-gold tiles will not get as much attention.
+
+Stones are unique in that they can be placed adjacent to any rune, and will count as the same type to any new rune placed next to it. However, magical limitations dictate that a conjuring board may only have at most two stones at a time. In the rare event of a rune-empty but under-plated board, the next rune placed will transform into a stone no matter what type or color it is.
+
+Skulls, on the other hand, can only be placed on top of existing runes on the board. When placed, they will instantly destroy the rune already placed down, leaving the gold-plated tile intact. Depending on how you use them, skulls can either provide an opening for future runes, or they can destroy a key rune that might be needed for a future one. Due to the volatile nature of skulls, alchemists wishing to conjure them require at least journeyman-level training.
+
+THE FORGE:
+
+Should you receive a rune which does not fit into anywhere on the board, the simple power of the "Right-Click" spell will send the rune to the Forge, where it would be discarded, allowing you to conjure a new one in place. Alchemists are advised to use the Forge responsibly however, as it can only dispose at most 3 runes.
+
+Trying to melt a 4th rune will overheat the Forge and cause a meltdown, earning the ire of The Council. To circumvent this, cool the Forge down by placing new runes on the board, which will grant an additional discard for each rune placed. Clearing an entire column or row will completely cool off the Forge.
