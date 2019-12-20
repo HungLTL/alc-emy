@@ -1,0 +1,26 @@
+ALC#EMY
+
+Based on the original 2001 puzzle game made by PopCap
+
+PROGRAMMER
+
+Le Truong Long Hung
+
+APPLICATIONS/SOURCES USED
+
+Visual Studio 2017 (C#)
+MS Paint + Paint.NET (icons)
+Google Images (icons)
+Audacity (sound edits)
+Stack Overflow (some code drabbles)
+
+MUSIC
+
+He Has No Face - Peter Hajba/Skaven
+War in the Middle Earth (Alchemy Remix) - Peter Hajba/Skaven
+
+SPECIAL THANKS TO
+
+Mr. Huynh Tuan Anh - code snippets
+Ms. Huyen Ho Thi Mong Trinh - code snippets
+

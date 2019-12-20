@@ -27,6 +27,8 @@ namespace alchemy
                                                                     // định giá trị cột Result, và diff để quyết định
                                                                     // giá trị cột Difficulty.
         {
+            this.MinimizeBox = false;
+            this.MaximizeBox = false;
             Win = win;
             this.StartPosition = FormStartPosition.CenterScreen;
             this.AutoSize = true;
@@ -70,7 +72,7 @@ namespace alchemy
 
         private void boxName_KeyPress(object sender, KeyPressEventArgs e)
         {
-            e.Handled = !char.IsLetter(e.KeyChar) && !char.IsDigit(e.KeyChar); // Chỉ cho phép nhập chữ số. Hạn chế gây sự cố ghi dữ liệu nếu người dùng lỡ sử dụng '$'.
+            e.Handled = !char.IsLetter(e.KeyChar) && !char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar); // Chỉ cho phép nhập chữ số. Hạn chế gây sự cố ghi dữ liệu nếu người dùng lỡ sử dụng '$'.
         }
 
         private void btnSubmit_Click(object sender, EventArgs e)

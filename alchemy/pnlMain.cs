@@ -25,7 +25,7 @@ namespace alchemy
         bool IsPaused = false, IsMuted = false, ClicksDisabled = false; // Một số giá trị bool ảnh hưởng âm thanh và
         // sự kiện click.
 
-        WMPLib.WindowsMediaPlayer runeSound, discardSound, restoreSound, skullSound, completeSound, invalidSound, criticalSound, failSound;
+        WMPLib.WindowsMediaPlayer runeSound, discardSound, restoreSound, skullSound, completeSound, invalidSound, criticalSound, failSound, successSound;
 
         public int getScore()
         {
@@ -120,6 +120,10 @@ namespace alchemy
             failSound = new WMPLib.WindowsMediaPlayer();
             failSound.URL = "sounds\\fail.wav";
             failSound.controls.stop();
+
+            successSound = new WMPLib.WindowsMediaPlayer();
+            successSound.URL = "sounds\\success.wav";
+            successSound.controls.stop();
         }
 
         public void Restart() // Hàm khởi động lại game.
@@ -254,7 +258,6 @@ namespace alchemy
                 g.DrawRectangle(p, s.Rectangle());
                 g.FillRectangle(Brushes.Gray, s.Rectangle());
             }
-
             currentRune = generateRndRune(); // Khi panel được tô màu, đặt bùa hiện tại là viên đá.
             currentRune.rune = "images\\sto.png";
         }
@@ -393,300 +396,73 @@ namespace alchemy
                                 {
                                     if (grid[i].getType() == string.Empty) // Nếu bùa hiện tại không phải dạng sọ, kiểm tra ô có trống không.
                                     {
-                                        // Bắt đầu xét trường hợp. Mỗi bùa ếm lên bảng phải tiếp xúc với ít nhất một lá bùa khác, và tất cả các
-                                        // lá bùa đó phải hoặc cùng loại hoặc cùng màu với lá bùa hiện tại thì mới cho phép ếm lên. Các viên đá
-                                        // được xem là cùng loại với các lá bùa lân cận.
-                                        if (i == 0) // Trường hợp chọn ô góc trái trên cùng.
+                                        List<Square> adjSqr = new List<Square>(); // Tạo danh sách chứa các ô liền kề ô được chọn.
+                                        for (int k = 0; k <= 80; k++)
                                         {
-                                            if ((grid[1].rune != string.Empty) || (grid[9].rune != string.Empty))
+                                            if (Rectangle.Intersect(grid[k].Rectangle(), grid[i].Rectangle()) != Rectangle.Empty) // Chỉ xét các ô tiếp xúc với ô được chọn.
                                             {
-                                                if ((((grid[1].getType() == "sto") || (grid[1].getType() == string.Empty) || (grid[1].getType() == currentRune.getType()) || (grid[1].getColor() == currentRune.getColor()))
-                                                    && ((grid[9].getType() == "sto") || (grid[9].getType() == string.Empty) || (grid[9].getType() == currentRune.getType()) || (grid[9].getColor() == currentRune.getColor())))
-                                                    || (currentRune.getType() == "sto"))
+                                                if ((k == i) || (k == i - 10) || (k == i + 10) || (k == i - 8) || (k == i + 8))
+                                                    continue;
+                                                else
                                                 {
-                                                    currentRune = OnCorrectRune(grid[i], currentRune);
-                                                    if ((grid[1].rune == string.Empty) || (grid[9].rune == string.Empty))
+                                                    adjSqr.Add(grid[k]); // Nếu các ô liền kề không phải tiếp xúc chéo hoặc là chính ô được chọn, thêm vào adjSqr.
+                                                }
+                                            }
+                                        }
+                                        bool AdjExists = false;
+                                        foreach (Square s in adjSqr) // Kiểm tra xem ô được chọn có tiếp xúc với bùa có sẵn không.
+                                        {
+                                            if (s.rune != string.Empty)
+                                            {
+                                                AdjExists = true;
+                                                break;
+                                            }
+                                        }
+                                        if (AdjExists)
+                                        {
+                                            if (currentRune.getType() == "sto") // Nếu bùa hiện tại là đá, cho phép đặt nếu liền kề ít nhất một bùa khác.
+                                            {
+                                                currentRune = OnCorrectRune(grid[i], currentRune);
+                                                score = score + scoreMod;
+                                            }
+                                            else
+                                            {
+                                                bool Valid = true;
+                                                int multiplier = 0;
+                                                foreach (Square s in adjSqr)
+                                                {
+                                                    if (s.rune == string.Empty)
+                                                        continue;
+                                                    if ((s.getType() != "sto") && (s.getType() != currentRune.getType()) && (s.getColor() != currentRune.getColor()))
                                                     {
-                                                        score = score + scoreMod;
+                                                        Valid = false;
+                                                        break;
                                                     }
                                                     else
-                                                        score = score + scoreMod * 2;
+                                                    {
+                                                        multiplier++;
+                                                    }
+                                                    // Lờ các ô trống. Nếu trong các ô tiếp xúc với ô được chọn có một ô không tương thích (khác loại, khác màu và không phải là
+                                                    // đá), xem như không hợp lệ và kết thúc vòng lặp. Ngược lại, multiplier +1. Int multiplier sẽ được dùng để tính điểm.
+                                                }
+                                                if (Valid) // Nếu hợp lệ, ếm bùa lên ô và người chơi nhận điểm tương ứng với độ khó. Điểm có thể được x2, x3 hay x4 tùy vào số ô có bùa tiếp xúc với nó.
+                                                {
+                                                    currentRune = OnCorrectRune(grid[i], currentRune);
+                                                    score = score + scoreMod * multiplier;
                                                 }
                                                 else
                                                 {
                                                     if (!IsMuted)
                                                         invalidSound.controls.play();
                                                 }
-                                            }
-                                            else
-                                            {
-                                                if (!IsMuted)
-                                                    invalidSound.controls.play();
                                             }
                                         }
                                         else
                                         {
-                                            if (i == 8) // Trường hợp chọn ô góc phải trên cùng.
-                                            {
-                                                if ((grid[7].getType() != string.Empty) || (grid[17].getType() != string.Empty))
-                                                {
-                                                    if ((((grid[7].getType() == "sto") || (grid[7].getType() == string.Empty) || (grid[7].getType() == currentRune.getType()) || (grid[7].getColor() == currentRune.getColor()))
-                                                        && ((grid[17].getType() == "sto") || (grid[17].getType() == string.Empty) || (grid[17].getType() == currentRune.getType()) || (grid[17].getColor() == currentRune.getColor())))
-                                                        || (currentRune.getType() == "sto"))
-                                                    {
-                                                        currentRune = OnCorrectRune(grid[i], currentRune);
-                                                        if ((grid[7].rune == string.Empty) || (grid[17].rune == string.Empty))
-                                                        {
-                                                            score = score + scoreMod;
-                                                        }
-                                                        else
-                                                            score = score + scoreMod * 2;
-                                                    }
-                                                    else
-                                                    {
-                                                        if (!IsMuted)
-                                                            invalidSound.controls.play();
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    if (!IsMuted)
-                                                        invalidSound.controls.play();
-                                                }
-                                            }
-                                            else
-                                            {
-                                                if (i == 72) // Trường hợp chọn ô góc trái dưới cùng
-                                                {
-                                                    if ((grid[63].getType() != string.Empty) || (grid[73].getType() != string.Empty))
-                                                    {
-                                                        if ((((grid[63].getType() == "sto") || (grid[63].getType() == string.Empty) || (grid[63].getType() == currentRune.getType()) || (grid[63].getColor() == currentRune.getColor()))
-                                                            && ((grid[73].getType() == "sto") || (grid[73].getType() == string.Empty) || (grid[73].getType() == currentRune.getType()) || (grid[73].getColor() == currentRune.getColor())))
-                                                            || (currentRune.getType() == "sto"))
-                                                        {
-                                                            currentRune = OnCorrectRune(grid[i], currentRune);
-                                                            if ((grid[63].rune == string.Empty) || (grid[73].rune == string.Empty))
-                                                            {
-                                                                score = score + scoreMod;
-                                                            }
-                                                            else
-                                                                score = score + scoreMod * 2;
-                                                        }
-                                                        else
-                                                        {
-                                                            if (!IsMuted)
-                                                                invalidSound.controls.play();
-                                                        }
-                                                    }
-                                                    else
-                                                    {
-                                                        if (!IsMuted)
-                                                            invalidSound.controls.play();
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    if (i == 80) // Trường hợp chọn ô góc phải dưới cùng
-                                                    {
-                                                        if ((grid[71].getType() != string.Empty) || (grid[79].getType() != string.Empty))
-                                                        {
-                                                            if ((((grid[71].getType() == "sto") || (grid[71].getType() == string.Empty) || (grid[71].getType() == currentRune.getType()) || (grid[71].getColor() == currentRune.getColor()))
-                                                                && ((grid[79].getType() == "sto") || (grid[79].getType() == string.Empty) || (grid[79].getType() == currentRune.getType()) || (grid[79].getColor() == currentRune.getColor())))
-                                                                || (currentRune.getType() == "sto"))
-                                                            {
-                                                                currentRune = OnCorrectRune(grid[i], currentRune);
-                                                                if ((grid[63].rune == string.Empty) || (grid[73].rune == string.Empty))
-                                                                {
-                                                                    score = score + scoreMod;
-                                                                }
-                                                                else
-                                                                    score = score + scoreMod * 2;
-                                                            }
-                                                            else
-                                                            {
-                                                                if (!IsMuted)
-                                                                    invalidSound.controls.play();
-                                                            }
-                                                        }
-                                                        else
-                                                        {
-                                                            if (!IsMuted)
-                                                                invalidSound.controls.play();
-                                                        }
-                                                    }
-                                                    else
-                                                    {
-                                                        if ((i >= 1) && (i <= 7)) // Trường hợp chọn các ô cạnh trên cùng
-                                                        {
-                                                            if ((grid[i - 1].getType() != string.Empty) || (grid[i + 9].getType() != string.Empty) || (grid[i + 1].getType() != string.Empty))
-                                                            {
-                                                                if ((((grid[i - 1].getType() == "sto") || (grid[i - 1].getType() == string.Empty) || (grid[i - 1].getType() == currentRune.getType()) || (grid[i - 1].getColor() == currentRune.getColor()))
-                                                                    && ((grid[i + 9].getType() == "sto") || (grid[i + 9].getType() == string.Empty) || (grid[i + 9].getType() == currentRune.getType()) || (grid[i + 9].getColor() == currentRune.getColor()))
-                                                                    && ((grid[i + 1].getType() == "sto") || (grid[i + 1].getType() == string.Empty) || (grid[i + 1].getType() == currentRune.getType()) || (grid[i + 1].getColor() == currentRune.getColor())))
-                                                                    || (currentRune.getType() == "sto"))
-                                                                {
-                                                                    currentRune = OnCorrectRune(grid[i], currentRune);
-                                                                    int mulMod = 0;
-                                                                    if (grid[i - 1].rune != string.Empty)
-                                                                        mulMod++;
-                                                                    if (grid[i + 1].rune != string.Empty)
-                                                                        mulMod++;
-                                                                    if (grid[i + 9].rune != string.Empty)
-                                                                        mulMod++;
-                                                                    score = score + scoreMod * mulMod;
-                                                                }
-                                                                else
-                                                                {
-                                                                    if (!IsMuted)
-                                                                        invalidSound.controls.play();
-                                                                }
-                                                            }
-                                                            else
-                                                            {
-                                                                if (!IsMuted)
-                                                                    invalidSound.controls.play();
-                                                            }
-                                                        }
-                                                        else
-                                                        {
-                                                            if ((i >= 73) && (i <= 79)) // Trường hợp chọn các ô cạnh dưới cùng
-                                                            {
-                                                                if ((grid[i - 1].getType() != string.Empty) || (grid[i - 9].getType() != string.Empty) || (grid[i + 1].getType() != string.Empty))
-                                                                {
-                                                                    if ((((grid[i - 1].getType() == "sto") || (grid[i - 1].getType() == string.Empty) || (grid[i - 1].getType() == currentRune.getType()) || (grid[i - 1].getColor() == currentRune.getColor()))
-                                                                        && ((grid[i - 9].getType() == "sto") || (grid[i - 9].getType() == string.Empty) || (grid[i - 9].getType() == currentRune.getType()) || (grid[i - 9].getColor() == currentRune.getColor()))
-                                                                        && ((grid[i + 1].getType() == "sto") || (grid[i + 1].getType() == string.Empty) || (grid[i + 1].getType() == currentRune.getType()) || (grid[i + 1].getColor() == currentRune.getColor())))
-                                                                        || (currentRune.getType() == "sto"))
-                                                                    {
-                                                                        currentRune = OnCorrectRune(grid[i], currentRune);
-                                                                        int mulMod = 0;
-                                                                        if (grid[i - 1].rune != string.Empty)
-                                                                            mulMod++;
-                                                                        if (grid[i + 1].rune != string.Empty)
-                                                                            mulMod++;
-                                                                        if (grid[i - 9].rune != string.Empty)
-                                                                            mulMod++;
-                                                                        score = score + scoreMod * mulMod;
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        if (!IsMuted)
-                                                                            invalidSound.controls.play();
-                                                                    }
-                                                                }
-                                                                else
-                                                                {
-                                                                    if (!IsMuted)
-                                                                        invalidSound.controls.play();
-                                                                }
-                                                            }
-                                                            else
-                                                            {
-                                                                if ((i == 9) || (i == 18) || (i == 27) || (i == 36) || (i == 45) || (i == 54) || (i == 63)) // Trường hợp chọn các ô cạnh trái
-                                                                {
-                                                                    if ((grid[i - 9].getType() != string.Empty) || (grid[i + 9].getType() != string.Empty) || (grid[i + 1].getType() != string.Empty))
-                                                                    {
-                                                                        if ((((grid[i - 9].getType() == "sto") || (grid[i - 9].getType() == string.Empty) || (grid[i - 9].getType() == currentRune.getType()) || (grid[i - 9].getColor() == currentRune.getColor()))
-                                                                            && ((grid[i + 9].getType() == "sto") || (grid[i + 9].getType() == string.Empty) || (grid[i + 9].getType() == currentRune.getType()) || (grid[i + 9].getColor() == currentRune.getColor()))
-                                                                            && ((grid[i + 1].getType() == "sto") || (grid[i + 1].getType() == string.Empty) || (grid[i + 1].getType() == currentRune.getType()) || (grid[i + 1].getColor() == currentRune.getColor())))
-                                                                            || (currentRune.getType() == "sto"))
-                                                                        {
-                                                                            currentRune = OnCorrectRune(grid[i], currentRune);
-                                                                            int mulMod = 0;
-                                                                            if (grid[i - 9].rune != string.Empty)
-                                                                                mulMod++;
-                                                                            if (grid[i + 1].rune != string.Empty)
-                                                                                mulMod++;
-                                                                            if (grid[i + 9].rune != string.Empty)
-                                                                                mulMod++;
-                                                                            score = score + scoreMod * mulMod;
-                                                                        }
-                                                                        else
-                                                                        {
-                                                                            if (!IsMuted)
-                                                                                invalidSound.controls.play();
-                                                                        }
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        if (!IsMuted)
-                                                                            invalidSound.controls.play();
-                                                                    }
-                                                                }
-                                                                else
-                                                                {
-                                                                    if ((i == 17) || (i == 26) || (i == 35) || (i == 44) || (i == 53) || (i == 62) || (i == 71)) // Trường hợp chọn các ô cạnh phải
-                                                                    {
-                                                                        if ((grid[i - 9].getType() != string.Empty) || (grid[i + 9].getType() != string.Empty) || (grid[i - 1].getType() != string.Empty))
-                                                                        {
-                                                                            if ((((grid[i - 9].getType() == "sto") || (grid[i - 9].getType() == string.Empty) || (grid[i - 9].getType() == currentRune.getType()) || (grid[i - 9].getColor() == currentRune.getColor()))
-                                                                                && ((grid[i + 9].getType() == "sto") || (grid[i + 9].getType() == string.Empty) || (grid[i + 9].getType() == currentRune.getType()) || (grid[i + 9].getColor() == currentRune.getColor()))
-                                                                                && ((grid[i - 1].getType() == "sto") || (grid[i - 1].getType() == string.Empty) || (grid[i - 1].getType() == currentRune.getType()) || (grid[i - 1].getColor() == currentRune.getColor())))
-                                                                                || (currentRune.getType() == "sto"))
-                                                                            {
-                                                                                currentRune = OnCorrectRune(grid[i], currentRune);
-                                                                                int mulMod = 0;
-                                                                                if (grid[i - 9].rune != string.Empty)
-                                                                                    mulMod++;
-                                                                                if (grid[i - 1].rune != string.Empty)
-                                                                                    mulMod++;
-                                                                                if (grid[i + 9].rune != string.Empty)
-                                                                                    mulMod++;
-                                                                                score = score + scoreMod * mulMod;
-                                                                            }
-                                                                            else
-                                                                            {
-                                                                                if (!IsMuted)
-                                                                                    invalidSound.controls.play();
-                                                                            }
-                                                                        }
-                                                                        else
-                                                                        {
-                                                                            if (!IsMuted)
-                                                                                invalidSound.controls.play();
-                                                                        }
-                                                                    }
-                                                                    else // Các trường hợp còn lại
-                                                                    {
-                                                                        if ((grid[i - 9].getType() != string.Empty) || (grid[i + 9].getType() != string.Empty) || (grid[i - 1].getType() != string.Empty) || (grid[i + 1].getType() != string.Empty))
-                                                                        {
-                                                                            if ((((grid[i - 9].getType() == "sto") || (grid[i - 9].getType() == string.Empty) || (grid[i - 9].getType() == currentRune.getType()) || (grid[i - 9].getColor() == currentRune.getColor()))
-                                                                                && ((grid[i + 9].getType() == "sto") || (grid[i + 9].getType() == string.Empty) || (grid[i + 9].getType() == currentRune.getType()) || (grid[i + 9].getColor() == currentRune.getColor()))
-                                                                                && ((grid[i + 1].getType() == "sto") || (grid[i + 1].getType() == string.Empty) || (grid[i + 1].getType() == currentRune.getType()) || (grid[i + 1].getColor() == currentRune.getColor()))
-                                                                                && ((grid[i - 1].getType() == "sto") || (grid[i - 1].getType() == string.Empty) || (grid[i - 1].getType() == currentRune.getType()) || (grid[i - 1].getColor() == currentRune.getColor())))
-                                                                                || (currentRune.getType() == "sto"))
-                                                                            {
-                                                                                currentRune = OnCorrectRune(grid[i], currentRune);
-                                                                                int mulMod = 0;
-                                                                                if (grid[i - 1].rune != string.Empty)
-                                                                                    mulMod++;
-                                                                                if (grid[i + 1].rune != string.Empty)
-                                                                                    mulMod++;
-                                                                                if (grid[i + 9].rune != string.Empty)
-                                                                                    mulMod++;
-                                                                                if (grid[i - 9].rune != string.Empty)
-                                                                                    mulMod++;
-                                                                                score = score + scoreMod * mulMod;
-                                                                            }
-                                                                            else
-                                                                            {
-                                                                                if (!IsMuted)
-                                                                                    invalidSound.controls.play();
-                                                                            }
-                                                                        }
-                                                                        else
-                                                                        {
-                                                                            if (!IsMuted)
-                                                                                invalidSound.controls.play();
-                                                                        }
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
+                                            if (!IsMuted)
+                                                invalidSound.controls.play();
                                         }
+                                        adjSqr.Clear();
                                     }
                                     else
                                     {
@@ -710,6 +486,11 @@ namespace alchemy
                                             }
                                             if (discard < 3)
                                                 discard++;
+                                        }
+                                        else
+                                        {
+                                            if (!IsMuted)
+                                                invalidSound.controls.play();
                                         }
                                     }
                                 }
@@ -791,6 +572,7 @@ namespace alchemy
                                              // ClicksDisabled có công dụng ngăn người chơi thay đổi bàn cờ.
                     {
                         timer.Stop();
+                        successSound.controls.play();
                         frmGameOver frmGO = new frmGameOver(true, score, t, difficulty);
                         frmGO.Show();
                         ClicksDisabled = true;

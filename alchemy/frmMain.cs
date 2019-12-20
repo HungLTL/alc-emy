@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using System.Drawing;
 using System.ComponentModel;
 using System.Media;
+using System.Threading;
 
 namespace alchemy
 {
@@ -17,14 +18,21 @@ namespace alchemy
         pnlMain panel;
         pnlCurrent panel2;
         Label lblScore, lblDiscard, lblTime;
-        Timer timerTimer, timerFunc;
-        Button btnRestart, btnPause, btnMusic, btnSound, btnHelp, btnArchive;
+        System.Windows.Forms.Timer timerTimer, timerFunc;
+        Button btnRestart, btnPause, btnMusic, btnSound, btnHelp, btnArchive, btnCredits, btnExit;
         ComboBox difficulty;
         public frmMain()
         {
+            Thread t = new Thread(new ThreadStart(LoadingStart));
+            t.Start();
+            Thread.Sleep(8000);
+
             this.Size = new Size(1024, 768);
             this.Text = "ALC#EMY";
             this.StartPosition = FormStartPosition.CenterScreen;
+            this.MaximizeBox = false;
+            this.MinimumSize = this.Size;
+            this.MaximumSize = this.Size;
 
             panel = new pnlMain(0, 0, 729);
             panel.MouseClick += panel_MouseClick;
@@ -79,51 +87,67 @@ namespace alchemy
             btnRestart = new Button();
             btnRestart.BackgroundImage = Image.FromFile("images\\restart.png");
             btnRestart.Size = new Size(55, 55);
-            btnRestart.Location = new Point(811, 475);
+            btnRestart.Location = new Point(811, 448);
             btnRestart.Click += btnRestart_Click;
             this.Controls.Add(btnRestart);
 
             btnArchive = new Button();
             btnArchive.BackgroundImage = Image.FromFile("images\\archive.png");
             btnArchive.Size = new Size(55, 55);
-            btnArchive.Location = new Point(866, 475);
+            btnArchive.Location = new Point(866, 448);
             btnArchive.Click += btnArchive_Click;
             this.Controls.Add(btnArchive);
 
             btnPause = new Button();
             btnPause.BackgroundImage = Image.FromFile("images\\pause.png");
             btnPause.Size = new Size(55, 55);
-            btnPause.Location = new Point(811, 525);
+            btnPause.Location = new Point(811, 498);
             btnPause.Click += btnPause_Click;
             this.Controls.Add(btnPause);
 
             btnMusic = new Button();
             btnMusic.BackgroundImage = Image.FromFile("images\\music.png");
             btnMusic.Size = new Size(55, 55);
-            btnMusic.Location = new Point(811, 580); 
+            btnMusic.Location = new Point(811, 553); 
             btnMusic.Click += btnMusic_Click;
             this.Controls.Add(btnMusic);
 
             btnSound = new Button();
             btnSound.BackgroundImage = Image.FromFile("images\\sound.png");
             btnSound.Size = new Size(55, 55);
-            btnSound.Location = new Point(866, 580);
+            btnSound.Location = new Point(866, 553);
             btnSound.Click += btnSound_Click;
             this.Controls.Add(btnSound);
 
             btnHelp = new Button();
+            btnHelp.Tag = "help";
             btnHelp.BackgroundImage = Image.FromFile("images\\help.png");
             btnHelp.Size = new Size(55, 55);
-            btnHelp.Location = new Point(866, 525);
-            btnHelp.Click += btnHelp_Click;
+            btnHelp.Location = new Point(866, 498);
+            btnHelp.Click += btnText_Click;
             this.Controls.Add(btnHelp);
 
-            timerTimer = new Timer();
+            btnCredits = new Button();
+            btnCredits.Tag = "cred";
+            btnCredits.BackgroundImage = Image.FromFile("images\\credits.png");
+            btnCredits.Size = new Size(55, 55);
+            btnCredits.Location = new Point(811, 608);
+            btnCredits.Click += btnText_Click;
+            this.Controls.Add(btnCredits);
+
+            btnExit = new Button();
+            btnExit.BackgroundImage = Image.FromFile("images\\exit.png");
+            btnExit.Size = new Size(55, 55);
+            btnExit.Location = new Point(866, 608);
+            btnExit.Click += btnExit_Click;
+            this.Controls.Add(btnExit);
+
+            timerTimer = new System.Windows.Forms.Timer();
             timerTimer.Interval = 1;
             timerTimer.Tick += timerTimer_Tick;
             timerTimer.Start();
 
-            timerFunc = new Timer();
+            timerFunc = new System.Windows.Forms.Timer();
             timerFunc.Interval = 20;
             timerFunc.Tick += timerFunc_Tick;
             timerFunc.Start();
@@ -131,6 +155,11 @@ namespace alchemy
             mainPlay = new SoundPlayer();
             mainPlay.SoundLocation = "sounds\\main.wav";
             mainPlay.PlayLooping();
+        }
+
+        public void LoadingStart()
+        {
+            Application.Run(new Loading());
         }
 
         private void panel_MouseClick(object sender, MouseEventArgs e)
@@ -198,12 +227,31 @@ namespace alchemy
             }
         }
 
-        private void btnHelp_Click(object sender, EventArgs e)
+        private void btnText_Click(object sender, EventArgs e)
         {
             if (!panel.getPause())
                 btnPause_Click(this, null); // Tạm dừng trò chơi khi đang đọc hướng dẫn.
-            string helpText = File.ReadAllText("help.txt"); // Đọc hướng dẫn từ file help.txt.
-            MessageBox.Show(helpText);
+            Button btn = sender as Button;
+            string msgText = string.Empty;
+            if ((string)btn.Tag == "help")
+                msgText = File.ReadAllText("help.txt"); // Nếu người dùng nhấp vào Help, đọc từ help.txt
+            else
+            {
+                if ((string)btn.Tag == "cred") // Nếu không, đọc từ credits.txt
+                    msgText = File.ReadAllText("credits.txt");
+            }
+            MessageBox.Show(msgText);
+        }
+
+        private void btnExit_Click(object sender, EventArgs e)
+        {
+            if (!panel.getPause())
+                btnPause_Click(this, null);
+            DialogResult result = MessageBox.Show("Are you sure you want to leave? The Council frowns on dereliction of duty.", "Notice", MessageBoxButtons.YesNo);
+            if (result == DialogResult.Yes)
+            {
+                this.Close();
+            }
         }
 
         private void timerTimer_Tick(object sender, EventArgs e)

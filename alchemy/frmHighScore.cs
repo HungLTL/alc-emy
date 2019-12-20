@@ -26,6 +26,9 @@ namespace alchemy
             this.StartPosition = FormStartPosition.CenterScreen;
             this.Size = new Size(680, 600);
             this.Text = "Archives";
+            this.MinimumSize = this.Size;
+            this.MaximumSize = this.Size;
+            this.MaximizeBox = false;
 
             IsSound = SoundStatus;
 
@@ -86,7 +89,12 @@ namespace alchemy
                     dt = new DataTable();
                     foreach (string c in column)
                     {
-                        dt.Columns.Add(c);
+                        if (c == "Score")
+                        {
+                            dt.Columns.Add(c, typeof(int));
+                        }
+                        else
+                            dt.Columns.Add(c);
                     }
                     string newline; //Thêm các giá trị các cột.
                     while ((newline = file.ReadLine()) != null)
@@ -134,9 +142,13 @@ namespace alchemy
         private void cmbSort_SelectedIndexChanged(object sender, EventArgs e) //Sắp xếp các dòng theo điểm hoặc thời gian từ cao đến thấp.
         {
             if (cmbSort.Text == "Score")
+            {
                 this.dgv.Sort(this.dgv.Columns["Score"], System.ComponentModel.ListSortDirection.Descending);
+            }
             else
+            {
                 this.dgv.Sort(this.dgv.Columns["Time"], System.ComponentModel.ListSortDirection.Descending);
+            }
             dgv.Refresh();
         }
     }
