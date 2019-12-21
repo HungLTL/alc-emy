@@ -283,15 +283,21 @@ namespace alchemy
         private Square checkRuneIntegrity(Square newRune, Square prevRune) // So sánh bùa mới tạo với bùa hiện tại. 
         {
             int NumOfStones = 0;
+            int MaxStones;
             int Emp = 0;
 
-            for (int i = 0; i <= 80; i++) // Đếm số viên đá đang có trên bàn cờ. Dùng vòng lập nếu đếm đủ 2 viên.
+            if (difficulty == 3) // Độ khó cao nhất cho phép 3 viên đá, còn lại 2
+                MaxStones = 3;
+            else
+                MaxStones = 2;
+
+            for (int i = 0; i <= 80; i++) // Đếm số viên đá đang có trên bàn cờ. Nếu số viên đá bằng số viên tối đa cho phép, dừng vòng lập.
             {
                 if (grid[i].getType() == "sto")
                 {
                     NumOfStones++;
                 }
-                if (NumOfStones == 2)
+                if (NumOfStones == MaxStones)
                     break;
             }
 
@@ -305,10 +311,10 @@ namespace alchemy
             {
                 newRune = generateRndRune();
             } while (((newRune.getType() == prevRune.getType()) && (newRune.getColor() == prevRune.getColor()))
-                    || ((newRune.getType() == "sto") && (NumOfStones == 2))
+                    || ((newRune.getType() == "sto") && (NumOfStones == MaxStones))
                     || (newRune.getType() == "sku") && (Emp == 80));
             // Bắt hệ thống tạo lại bùa mới nếu bùa mới trò chơi tạo ra cùng loại với màu của bùa hiện tại, hoặc
-            // nếu bùa mới là viên đá khi bàn cờ đã có 2 viên đá rồi, hoặc nếu trò chơi tạo ra sọ trong khi bàn
+            // nếu bùa mới là viên đá khi bàn cờ đã đủ số viên đá tối đa, hoặc nếu trò chơi tạo ra sọ trong khi bàn
             // cờ chỉ có 1 ô có bùa (tức 80 ô trống).
             return newRune;
         }

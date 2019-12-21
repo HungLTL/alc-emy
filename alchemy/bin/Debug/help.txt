@@ -8,7 +8,7 @@ Each rune is created with a random symbol and color, with variants depending on 
 
 Your performance will be noted based on how you fill out the board. Generally, you get better feedback for placing runes next to already existing runes, with the more the better. Clearing out a row or column will grant additional marks to your final scores, while runes placed on already-gold tiles will not get as much attention.
 
-Stones are unique in that they can be placed adjacent to any rune, and will count as the same type to any new rune placed next to it. However, magical limitations dictate that a conjuring board may only have at most two stones at a time. In the rare event of a rune-empty but under-plated board, the next rune placed will transform into a stone no matter what type or color it is.
+Stones are unique in that they can be placed adjacent to any rune, and will count as the same type to any new rune placed next to it. However, magical limitations dictate that a conjurer may only create two stones at a time (though master-level conjurers may have three). In the rare event of a rune-empty but under-plated board, the next rune placed will transform into a stone no matter what type or color it is.
 
 Skulls, on the other hand, can only be placed on top of existing runes on the board. When placed, they will instantly destroy the rune already placed down, leaving the gold-plated tile intact. Depending on how you use them, skulls can either provide an opening for future runes, or they can destroy a key rune that might be needed for a future one. Due to the volatile nature of skulls, alchemists wishing to conjure them require at least journeyman-level training.
 

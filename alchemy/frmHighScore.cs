@@ -83,8 +83,7 @@ namespace alchemy
             {                             // trong trường hợp không có score.txt (do vừa mới cài đặt hoặc xóa),
                                           // chương trình sẽ báo lỗi Exception.
                 using (file = new StreamReader("score.txt")) // Cần dùng using đễ hệ thống tự đóng lại StreamReader
-                {                                            // sau khi dùng. Thiếu "using" sẽ dẫn đến lỗi "used by
-                                                             // another process".
+                {                                            // sau khi dùng. Thiếu "using" sẽ dẫn đến lỗi "used by                                         // another process".
                     string[] column = file.ReadLine().Split('$'); // Thêm các cột vào DataTable. Tên cột có trong frmGameOver.cs
                     dt = new DataTable();
                     foreach (string c in column)
@@ -108,6 +107,7 @@ namespace alchemy
                         dt.Rows.Add(dr);
                     }
                 }
+                File.SetAttributes("score.txt", FileAttributes.Hidden | FileAttributes.ReadOnly | FileAttributes.Encrypted);
                 dgv.DataSource = dt;
             }
         }
