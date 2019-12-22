@@ -33,6 +33,10 @@ namespace alchemy
             this.MaximizeBox = false;
             this.MinimumSize = this.Size;
             this.MaximumSize = this.Size;
+            this.MouseHover += frmMain_MouseHover;
+
+            File.SetAttributes("dat\\help.txt", FileAttributes.Hidden | FileAttributes.ReadOnly | FileAttributes.Encrypted);
+            File.SetAttributes("dat\\credits.txt", FileAttributes.Hidden | FileAttributes.ReadOnly | FileAttributes.Encrypted);
 
             panel = new pnlMain(0, 0, 729);
             panel.MouseClick += panel_MouseClick;
@@ -234,11 +238,11 @@ namespace alchemy
             Button btn = sender as Button;
             string msgText = string.Empty;
             if ((string)btn.Tag == "help")
-                msgText = File.ReadAllText("help.txt"); // Nếu người dùng nhấp vào Help, đọc từ help.txt
+                msgText = File.ReadAllText("dat\\help.txt"); // Nếu người dùng nhấp vào Help, đọc từ help.txt
             else
             {
                 if ((string)btn.Tag == "cred") // Nếu không, đọc từ credits.txt
-                    msgText = File.ReadAllText("credits.txt");
+                    msgText = File.ReadAllText("dat\\credits.txt");
             }
             MessageBox.Show(msgText);
         }
@@ -302,6 +306,24 @@ namespace alchemy
                     break;
             }
             btnRestart_Click(this, null); // Khi người chơi đồng ý đổi độ khó, tự khởi động lại trò chơi để áp dụng độ khó mới.
+        }
+
+        private void frmMain_MouseHover(object sender, EventArgs e)
+        {
+            ToolTip ttip = new ToolTip();
+            ttip.AutoPopDelay = 0;
+            ttip.InitialDelay = 0;
+            ttip.ReshowDelay = 0;
+            ttip.ShowAlways = true;
+
+            ttip.SetToolTip(btnRestart, "Clears the board and starts a new session.");
+            ttip.SetToolTip(btnArchive, "Opens the Archives to view your records.");
+            ttip.SetToolTip(btnCredits, "All resources and individuals that help made up ALC#EMY.");
+            ttip.SetToolTip(btnExit, "Closes the current session.");
+            ttip.SetToolTip(btnHelp, "Opens the Alchemist's Manual.");
+            ttip.SetToolTip(btnMusic, "Enables/Disables music.");
+            ttip.SetToolTip(btnSound, "Enables/Disables sound.");
+            ttip.SetToolTip(btnPause, "Suspends/Resumes the current session.");
         }
     }
 }

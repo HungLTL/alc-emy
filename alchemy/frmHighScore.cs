@@ -79,11 +79,11 @@ namespace alchemy
             // hệ thống sẽ truy cập vào file này, đọc dữ liệu và truyền vào DataTable. DataTable này sẽ được 
             // DataGridView dùng làm DataSource.
 
-            if (File.Exists("score.txt")) //Kiểm tra xem score.txt có tồn tại hay không. Nếu không có dòng này,
+            if (File.Exists("dat\\score.txt")) //Kiểm tra xem score.txt có tồn tại hay không. Nếu không có dòng này,
             {                             // trong trường hợp không có score.txt (do vừa mới cài đặt hoặc xóa),
                                           // chương trình sẽ báo lỗi Exception.
-                using (file = new StreamReader("score.txt")) // Cần dùng using đễ hệ thống tự đóng lại StreamReader
-                {                                            // sau khi dùng. Thiếu "using" sẽ dẫn đến lỗi "used by                                         // another process".
+                using (file = new StreamReader("dat\\score.txt")) // Cần dùng using đễ hệ thống tự đóng lại StreamReader
+                {                                           // sau khi dùng. Thiếu "using" sẽ dẫn đến lỗi "used by another process".
                     string[] column = file.ReadLine().Split('$'); // Thêm các cột vào DataTable. Tên cột có trong frmGameOver.cs
                     dt = new DataTable();
                     foreach (string c in column)
@@ -107,7 +107,6 @@ namespace alchemy
                         dt.Rows.Add(dr);
                     }
                 }
-                File.SetAttributes("score.txt", FileAttributes.Hidden | FileAttributes.ReadOnly | FileAttributes.Encrypted);
                 dgv.DataSource = dt;
             }
         }
@@ -117,7 +116,9 @@ namespace alchemy
             DialogResult res = MessageBox.Show("This will destroy all existing records.", "Are you sure?", MessageBoxButtons.YesNo);
             if (res == DialogResult.Yes)
             {
-                File.Delete("score.txt");
+                FileInfo score = new FileInfo("dat\\score.txt");
+                score.IsReadOnly = false;
+                File.Delete("dat\\score.txt");
                 this.Close();
                 if (!IsSound) //Nếu người dùng không tắt âm thanh, IsSound trả về false. Khi này, hệ thống phát âm thanh
                               // "đốt giấy" để mô phỏng người dùng xóa dữ liệu, hay "đốt hết văn bản"

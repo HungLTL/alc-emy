@@ -80,17 +80,21 @@ namespace alchemy
             if (boxName.Text != null) // Kiểm tra boxName có trống hay không. Nếu không trống, dữ liệu sẽ không được nhập vào score.txt.
             {
                 Player player = new Player(boxName.Text, Score, Time, Difficulty, Win); // Tạo lớp Player chứa toàn bộ thông tin người chơi.
-                if (!File.Exists("score.txt")) //Kiểm tra xem có tồn tại score.txt không.
+                if (!File.Exists("dat\\score.txt")) //Kiểm tra xem có tồn tại score.txt không.
                 {
-                    using (StreamWriter output = new StreamWriter("score.txt", true)) //Nếu không tồn tại, tạo file score.txt mới, với dòng đâu tiên mang tên các cột.
+                    using (StreamWriter output = new StreamWriter("dat\\score.txt", true)) //Nếu không tồn tại, tạo file score.txt mới, với dòng đâu tiên mang tên các cột.
                     {
+                        File.SetAttributes("dat\\score.txt", FileAttributes.Hidden | FileAttributes.ReadOnly | FileAttributes.Encrypted);
                         output.WriteLine("Name$Date$Difficulty$Score$Time$Result");
                     }
                 }
-                using (StreamWriter output = new StreamWriter("score.txt", true))
+                FileInfo score = new FileInfo("dat\\score.txt");
+                score.IsReadOnly = false;
+                using (StreamWriter output = new StreamWriter("dat\\score.txt", true))
                 {
                     output.WriteLine(player.writePlayer()); // Gọi writePlayer của lớp Player để viết thông tin người chơi vào score.txt.
                 }
+                score.IsReadOnly = true;
                 this.Close();
             }
         }
