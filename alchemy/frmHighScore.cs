@@ -113,21 +113,26 @@ namespace alchemy
 
         private void btnClear_Click(object sender, EventArgs e) //Hàm xóa toàn bộ dữ liệu người chơi.
         {
-            DialogResult res = MessageBox.Show("This will destroy all existing records.", "Are you sure?", MessageBoxButtons.YesNo);
-            if (res == DialogResult.Yes)
+            if (File.Exists("dat\\score.txt"))
             {
-                FileInfo score = new FileInfo("dat\\score.txt");
-                score.IsReadOnly = false;
-                File.Delete("dat\\score.txt");
-                this.Close();
-                if (!IsSound) //Nếu người dùng không tắt âm thanh, IsSound trả về false. Khi này, hệ thống phát âm thanh
-                              // "đốt giấy" để mô phỏng người dùng xóa dữ liệu, hay "đốt hết văn bản"
+                DialogResult res = MessageBox.Show("This will destroy all existing records.", "Are you sure?", MessageBoxButtons.YesNo);
+                if (res == DialogResult.Yes)
                 {
-                    WMPLib.WindowsMediaPlayer burn = new WMPLib.WindowsMediaPlayer();
-                    burn.URL = "sounds\\burn.wav";
-                    burn.controls.play();
+                    FileInfo score = new FileInfo("dat\\score.txt");
+                    score.IsReadOnly = false;
+                    File.Delete("dat\\score.txt");
+                    this.Close();
+                    if (!IsSound) //Nếu người dùng không tắt âm thanh, IsSound trả về false. Khi này, hệ thống phát âm thanh
+                                  // "đốt giấy" để mô phỏng người dùng xóa dữ liệu, hay "đốt hết văn bản"
+                    {
+                        WMPLib.WindowsMediaPlayer burn = new WMPLib.WindowsMediaPlayer();
+                        burn.URL = "sounds\\burn.wav";
+                        burn.controls.play();
+                    }
                 }
             }
+            else
+                MessageBox.Show("There are no archives to burn!");
         }
 
         private void cmbDiff_SelectedIndexChanged(object sender, EventArgs e) //Lọc các dòng có độ khó bằng giá trị cmbDiff.
