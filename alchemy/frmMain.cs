@@ -35,9 +35,6 @@ namespace alchemy
             this.MaximumSize = this.Size;
             this.MouseHover += frmMain_MouseHover;
 
-            File.SetAttributes("dat\\help.txt", FileAttributes.Hidden | FileAttributes.ReadOnly | FileAttributes.Encrypted);
-            File.SetAttributes("dat\\credits.txt", FileAttributes.Hidden | FileAttributes.ReadOnly | FileAttributes.Encrypted);
-
             panel = new pnlMain(0, 0, 729);
             panel.MouseClick += panel_MouseClick;
             this.Controls.Add(panel);

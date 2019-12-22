@@ -84,7 +84,7 @@ namespace alchemy
                 {
                     using (StreamWriter output = new StreamWriter("dat\\score.txt", true)) //Nếu không tồn tại, tạo file score.txt mới, với dòng đâu tiên mang tên các cột.
                     {
-                        File.SetAttributes("dat\\score.txt", FileAttributes.Hidden | FileAttributes.ReadOnly | FileAttributes.Encrypted);
+                        File.SetAttributes("dat\\score.txt", FileAttributes.Hidden | FileAttributes.ReadOnly);
                         output.WriteLine("Name$Date$Difficulty$Score$Time$Result");
                     }
                 }
