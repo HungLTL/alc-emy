@@ -578,7 +578,10 @@ namespace alchemy
                                              // ClicksDisabled có công dụng ngăn người chơi thay đổi bàn cờ.
                     {
                         timer.Stop();
-                        successSound.controls.play();
+                        if (!IsMuted)
+                        {
+                            successSound.controls.play();
+                        }
                         frmGameOver frmGO = new frmGameOver(true, score, t, difficulty);
                         frmGO.Show();
                         ClicksDisabled = true;
@@ -608,7 +611,10 @@ namespace alchemy
                             {
                                 timer.Stop();
                                 criticalSound.controls.stop();
-                                failSound.controls.play();
+                                if (!IsMuted)
+                                {
+                                    failSound.controls.play();
+                                }
                                 frmGameOver frmGO = new frmGameOver(false, score, t, difficulty);
                                 frmGO.Show();
                                 ClicksDisabled = true;

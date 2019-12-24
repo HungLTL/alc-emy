@@ -121,19 +121,17 @@ namespace alchemy
             this.Controls.Add(btnSound);
 
             btnHelp = new Button();
-            btnHelp.Tag = "help";
             btnHelp.BackgroundImage = Image.FromFile("images\\help.png");
             btnHelp.Size = new Size(55, 55);
             btnHelp.Location = new Point(866, 498);
-            btnHelp.Click += btnText_Click;
+            btnHelp.Click += btnHelp_Click;
             this.Controls.Add(btnHelp);
 
             btnCredits = new Button();
-            btnCredits.Tag = "cred";
             btnCredits.BackgroundImage = Image.FromFile("images\\credits.png");
             btnCredits.Size = new Size(55, 55);
             btnCredits.Location = new Point(811, 608);
-            btnCredits.Click += btnText_Click;
+            btnCredits.Click += btnCredits_Click;
             this.Controls.Add(btnCredits);
 
             btnExit = new Button();
@@ -228,19 +226,19 @@ namespace alchemy
             }
         }
 
-        private void btnText_Click(object sender, EventArgs e)
+        private void btnHelp_Click(object sender, EventArgs e)
         {
             if (!panel.getPause())
-                btnPause_Click(this, null); // Tạm dừng trò chơi khi đang đọc hướng dẫn.
-            Button btn = sender as Button;
-            string msgText = string.Empty;
-            if ((string)btn.Tag == "help")
-                msgText = File.ReadAllText("dat\\help.txt"); // Nếu người dùng nhấp vào Help, đọc từ help.txt
-            else
-            {
-                if ((string)btn.Tag == "cred") // Nếu không, đọc từ credits.txt
-                    msgText = File.ReadAllText("dat\\credits.txt");
-            }
+                btnPause_Click(this, null);
+            frmHelp help = new frmHelp();
+            help.Show();
+        }
+
+        private void btnCredits_Click(object sender, EventArgs e)
+        {
+            if (!panel.getPause())
+            btnPause_Click(this, null); // Tạm dừng trò chơi khi đang đọc hướng dẫn.
+            string msgText = File.ReadAllText("dat\\credits.txt");
             MessageBox.Show(msgText);
         }
 
@@ -308,9 +306,9 @@ namespace alchemy
         private void frmMain_MouseHover(object sender, EventArgs e)
         {
             ToolTip ttip = new ToolTip();
-            ttip.AutoPopDelay = 0;
+            ttip.AutoPopDelay = 5000;
             ttip.InitialDelay = 0;
-            ttip.ReshowDelay = 0;
+            ttip.ReshowDelay = 500;
             ttip.ShowAlways = true;
 
             ttip.SetToolTip(btnRestart, "Clears the board and starts a new session.");

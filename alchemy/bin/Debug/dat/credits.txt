@@ -6,18 +6,26 @@ PROGRAMMER
 
 Le Truong Long Hung
 
+GRAPHICS
+
+Le Truong Long Hung
+
+VIDEOS
+
+Le Truong Long Hung
+
 APPLICATIONS/SOURCES USED
 
 Visual Studio 2017 (C#)
 MS Paint + Paint.NET (icons)
 Google Images (icons)
 Audacity (sound edits)
-Stack Overflow (some code drabbles)
+Sony Vegas Pro 13 (help videos)
 
 MUSIC
 
 He Has No Face - Peter Hajba/Skaven
-War in the Middle Earth (Alchemy Remix) - Peter Hajba/Skaven
+War in the Middle Earth - Peter Hajba/Skaven
 
 SPECIAL THANKS TO
 
