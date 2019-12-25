@@ -10,10 +10,10 @@ namespace alchemy
 {
     class Square
     {
-        public int X { get; set; }
-        public int Y { get; set; }
-        int Width { get; set; }
-        public string rune { get; set; } //Chứa đường dẫn đến hình ảnh các bùa. Sẽ được sử dụng cho DrawImage.
+        public int X;
+        public int Y;
+        int Width;
+        public string rune; //Chứa đường dẫn đến hình ảnh các bùa. Sẽ được sử dụng cho DrawImage.
 
         public bool IsFilled { get; set; } // Kiểm tra ô bao giờ được ếm bùa chưa. Ảnh hưởng màu sắc và điểm. Mặc định
         // false, tức chưa từng được ếm bùa.
