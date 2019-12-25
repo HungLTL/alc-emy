@@ -131,8 +131,8 @@ namespace alchemy
             this.Paint += pnlMain_Paint; // Tô lại pnlMain.
             foreach (Square s in grid) // Xóa toàn bộ các bùa khỏi bàn cờ và đặt lại Square.IsFilled = false.
             {
-                s.rune = string.Empty;
-                s.IsFilled = false;
+                s.setRune(string.Empty);
+                s.setFillStatus(false);
             }
             discard = 3;
             score = 0;
@@ -259,23 +259,24 @@ namespace alchemy
                 g.FillRectangle(Brushes.Gray, s.Rectangle());
             }
             currentRune = generateRndRune(); // Khi panel được tô màu, đặt bùa hiện tại là viên đá.
-            currentRune.rune = "images\\sto.png";
+            currentRune.setRune("images\\sto.png");
         }
 
         private void PaintCorrectRune(Square sqr, Square current) // sqr là ô hiện tại được chọn, current là bùa hiện tại đang được sử dụng.
         {
-            sqr.rune = current.rune;
+            sqr.setRune(current.getRune());
             Graphics g = CreateGraphics();
-            if (sqr.IsFilled == false) // Nếu !IsFilled, đặt IsFilled = true và tô background màu vàng, sau đó trừ NumOfNotFilled.
+            if (!sqr.getFillStatus()) // Nếu !IsFilled, đặt IsFilled = true và tô background màu vàng, sau đó trừ NumOfNotFilled.
             {
-                sqr.IsFilled = true;
-                g.FillRectangle(Brushes.Goldenrod, sqr.X, sqr.Y, sqr.Rectangle().Width - 1, sqr.Rectangle().Width - 1);
+                sqr.setFillStatus(true);
+                g.FillRectangle(Brushes.Goldenrod, sqr.getX(), sqr.getY(), sqr.Rectangle().Width - 1, sqr.Rectangle().Width - 1);
                 NumOfNotFilled--;
             }
-            g.DrawImage(new Bitmap(current.rune), sqr.Rectangle()); // "Ếm" bùa cho ô vuông. Dòng này phải đi sau FillRectangle, nếu không
+            g.DrawImage(new Bitmap(current.getRune()), sqr.Rectangle()); // "Ếm" bùa cho ô vuông. Dòng này phải đi sau FillRectangle, nếu không
             // nền vàng sẽ tô đè lên bùa.
             if (!IsMuted) // Nếu !IsMuted, chơi file âm thanh ếm bùa.
             {
+                runeSound.controls.stop();
                 runeSound.controls.play();
             }
         }
@@ -303,7 +304,7 @@ namespace alchemy
 
             for (int i = 0; i <= 80; i++) // Đếm số ô trống trên bàn cờ.
             {
-                if (grid[i].rune == string.Empty)
+                if (grid[i].getRune() == string.Empty)
                     Emp++;
             }
 
@@ -329,6 +330,7 @@ namespace alchemy
                 discard = discard + 1;
                 if (IsMuted == false)
                 {
+                    restoreSound.controls.stop();
                     restoreSound.controls.play();
                 }
             }
@@ -348,7 +350,7 @@ namespace alchemy
                         if (grid[i].Rectangle().Contains(cursorPos))
                         {
                             int scoreMod = 0;
-                            if (grid[i].IsFilled == false) // Điểm nhận được khi ếm bùa ô. Điểm phụ thuộc vào độ khó và liệu ô đó có phủ vàng không.
+                            if (!grid[i].getFillStatus()) // Điểm nhận được khi ếm bùa ô. Điểm phụ thuộc vào độ khó và liệu ô đó có phủ vàng không.
                             {
                                 switch (difficulty)
                                 {
@@ -365,7 +367,7 @@ namespace alchemy
                             }
                             else
                             {
-                                if (grid[i].IsFilled == true)
+                                if (grid[i].getFillStatus())
                                 {
                                     switch (difficulty)
                                     {
@@ -384,12 +386,12 @@ namespace alchemy
                             int NumOfEmpty = 0;
                             for (int k = 0; k <= 80; k++)
                             {
-                                if (grid[k].rune == string.Empty)
+                                if (grid[k].getRune() == string.Empty)
                                     NumOfEmpty++;
                             } // Nếu toàn bộ bàn cờ không có bùa nhưng vẫn còn ô chưa tô vàng, bất kỳ lá bùa nào ếm lên bảng sẽ biến thành một viên đá, bảo đảm game còn chơi được.
                             if ((NumOfEmpty == 81) && (NumOfNotFilled > 0))
                             {
-                                currentRune.rune = "images\\sto.png";
+                                currentRune.setRune("images\\sto.png");
                                 PaintCorrectRune(grid[i], currentRune);
                                 Square prevRune = currentRune;
                                 currentRune = checkRuneIntegrity(currentRune, prevRune);
@@ -418,7 +420,7 @@ namespace alchemy
                                         bool AdjExists = false;
                                         foreach (Square s in adjSqr) // Kiểm tra xem ô được chọn có tiếp xúc với bùa có sẵn không.
                                         {
-                                            if (s.rune != string.Empty)
+                                            if (s.getRune() != string.Empty)
                                             {
                                                 AdjExists = true;
                                                 break;
@@ -437,7 +439,7 @@ namespace alchemy
                                                 int multiplier = 0;
                                                 foreach (Square s in adjSqr)
                                                 {
-                                                    if (s.rune == string.Empty)
+                                                    if (s.getRune() == string.Empty)
                                                         continue;
                                                     if ((s.getType() != "sto") && (s.getType() != currentRune.getType()) && (s.getColor() != currentRune.getColor()))
                                                     {
@@ -459,6 +461,7 @@ namespace alchemy
                                                 else
                                                 {
                                                     if (!IsMuted)
+                                                        invalidSound.controls.stop();
                                                         invalidSound.controls.play();
                                                 }
                                             }
@@ -466,6 +469,7 @@ namespace alchemy
                                         else
                                         {
                                             if (!IsMuted)
+                                                invalidSound.controls.stop();
                                                 invalidSound.controls.play();
                                         }
                                         adjSqr.Clear();
@@ -473,6 +477,7 @@ namespace alchemy
                                     else
                                     {
                                         if (!IsMuted)
+                                            invalidSound.controls.stop();
                                             invalidSound.controls.play();
                                     }
                                 }
@@ -482,12 +487,13 @@ namespace alchemy
                                     {
                                         if (grid[i].getType() != string.Empty) // Nếu bùa hiện tại là sọ, kiểm tra xem ô người chơi chọn có bùa không, do bùa sọ có chức năng xóa bùa trên bảng.
                                         {
-                                            grid[i].rune = string.Empty;
-                                            g.FillRectangle(Brushes.Goldenrod, grid[i].X, grid[i].Y, grid[i].Rectangle().Width - 1, grid[i].Rectangle().Width - 1);
+                                            grid[i].setRune(string.Empty);
+                                            g.FillRectangle(Brushes.Goldenrod, grid[i].getX(), grid[i].getY(), grid[i].Rectangle().Width - 1, grid[i].Rectangle().Width - 1);
                                             Square prevRune = currentRune;
                                             currentRune = checkRuneIntegrity(currentRune, prevRune);
                                             if (!IsMuted)
                                             {
+                                                skullSound.controls.stop();
                                                 skullSound.controls.play();
                                             }
                                             if (discard < 3)
@@ -496,6 +502,7 @@ namespace alchemy
                                         else
                                         {
                                             if (!IsMuted)
+                                                invalidSound.controls.stop();
                                                 invalidSound.controls.play();
                                         }
                                     }
@@ -530,10 +537,11 @@ namespace alchemy
                             }
                             for (int j = i; j <= 80; j = j + 9)
                             {
-                                grid[j].rune = string.Empty;
-                                g.FillRectangle(Brushes.Goldenrod, grid[j].X, grid[j].Y, grid[j].Rectangle().Width - 1, grid[j].Rectangle().Width - 1);
+                                grid[j].setRune(string.Empty);
+                                g.FillRectangle(Brushes.Goldenrod, grid[j].getX(), grid[j].getY(), grid[j].Rectangle().Width - 1, grid[j].Rectangle().Width - 1);
                             }
                             if (!IsMuted)
+                                completeSound.controls.stop();
                                 completeSound.controls.play();
                         }
                     }
@@ -562,10 +570,11 @@ namespace alchemy
                             }
                             for (int k = i; k <= i + 8; k++)
                             {
-                                grid[k].rune = string.Empty;
-                                g.FillRectangle(Brushes.Goldenrod, grid[k].X, grid[k].Y, grid[k].Rectangle().Width - 1, grid[k].Rectangle().Width - 1);
+                                grid[k].setRune(string.Empty);
+                                g.FillRectangle(Brushes.Goldenrod, grid[k].getX(), grid[k].getY(), grid[k].Rectangle().Width - 1, grid[k].Rectangle().Width - 1);
                             }
                             if (!IsMuted)
+                                completeSound.controls.stop();
                                 completeSound.controls.play();
                         }
                     }
@@ -595,6 +604,7 @@ namespace alchemy
                         {
                             if (!IsMuted)
                             {
+                                discardSound.controls.stop();
                                 discardSound.controls.play();
                             }
                             Square prevRune = currentRune;
@@ -623,6 +633,7 @@ namespace alchemy
                         else
                         {
                             if (!IsMuted)
+                                invalidSound.controls.stop();
                                 invalidSound.controls.play();
                         }
 

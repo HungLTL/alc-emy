@@ -23,11 +23,11 @@ namespace alchemy
             Graphics g = e.Graphics;
             current = pnlMain.getCurrentRune();
             g.DrawRectangle(Pens.Transparent, current.Rectangle());
-            g.DrawImage(new Bitmap(current.rune), current.Rectangle());
+            g.DrawImage(new Bitmap(current.getRune()), current.Rectangle());
         }
         public void setRune(string type)
         {
-            current.rune = type;
+            current.setRune(type);
         }
     }
 }

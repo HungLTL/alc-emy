@@ -10,12 +10,12 @@ namespace alchemy
 {
     class Square
     {
-        public int X;
-        public int Y;
+        int X;
+        int Y;
         int Width;
-        public string rune; //Chứa đường dẫn đến hình ảnh các bùa. Sẽ được sử dụng cho DrawImage.
+        string rune; //Chứa đường dẫn đến hình ảnh các bùa. Sẽ được sử dụng cho DrawImage.
 
-        public bool IsFilled { get; set; } // Kiểm tra ô bao giờ được ếm bùa chưa. Ảnh hưởng màu sắc và điểm. Mặc định
+        bool IsFilled; // Kiểm tra ô bao giờ được ếm bùa chưa. Ảnh hưởng màu sắc và điểm. Mặc định
         // false, tức chưa từng được ếm bùa.
 
         public Square(int x, int y, int w, string r)
@@ -25,6 +25,36 @@ namespace alchemy
             Width = w;
             rune = r;
             IsFilled = false;
+        }
+
+        public int getX()
+        {
+            return X;
+        }
+
+        public int getY()
+        {
+            return Y;
+        }
+
+        public string getRune()
+        {
+            return rune;
+        }
+
+        public void setRune(string newRune)
+        {
+            rune = newRune;
+        }
+
+        public bool getFillStatus()
+        {
+            return IsFilled;
+        }
+
+        public void setFillStatus(bool stat)
+        {
+            IsFilled = stat;
         }
 
         public string getType() // Trả về loại bùa ô vuông đang chứa. Nếu ô rỗng, trả về chuỗi rỗng.

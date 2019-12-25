@@ -1,1 +1,16 @@
-đây là một bản remake của game Alchemy (2001) của PopCap làm trong C#
+ALC#EMY (dấu # thay thế chữ 'H') là một phiên bản remake C# của Alchemy (TV: giả kim học), một game trí tuệ phát hành năm 2001 và được phát triển bởi PopCap.
+
+Trong ALC#EMY, người chơi sẽ được giao một "bàn cờ" kích cỡ 9x9 màu xám, và nhiệm vụ của người chơi là phải hóa vàng toàn bộ bàn cờ. Để đạt được điều này, người chơi đặt lên bàn cờ những biểu tượng "rune", tạm dịch tiếng Việt là bùa phép. Mỗi bùa phép được tạo ra với biểu tượng và màu khác nhau, và bùa phép hiện tại của người chơi có thể được xem ở panel góc trên bên phải.
+
+Quy tắc ếm bùa là mỗi bùa phép mới phải được đặt lên một ô trống và bên cạnh ít nhất một lá bùa khác, và tất cả những lá bùa trên bàn cờ mà tiếp xúc với bùa mới (theo chiều ngang hoặc dọc) phải trùng biểu tượng hoặc màu sắc với bùa mới. Nếu người chơi lắp đầy bùa lên một hàng hoặc cột, toàn bộ những bùa trên hàng/cột đó sẽ bị xóa, tạo thêm chỗ trống cho người chơi.
+
+Người chơi được điểm cho mỗi lá bùa ếm lên bàn cờ theo công thức 5/10/20 (tùy độ khó) * số lá bùa tiếp xúc, hoặc 2/4/8 * số lá bùa tiếp xúc nếu ô vuông người chơi ếm bùa lên đã được hóa vàng sẵn rồi. Người chơi sẽ được nhiều điểm hơn ở những mức khó cao hơn, nhưng trò chơi sẽ sử dụng nhiều tổ hợp biểu tượng và màu hơn. Dọn sạch được một cột hoặc hàng sẽ cho người chơi điểm từ bùa đó + 5/10/20 * 9.
+
+Đá là một trong hai dạng bùa đặc biệt trong trò chơi. Các viên đá có thể được tiếp xúc với bất kỳ bùa nào, hay nói cách khác, một viên đá có thể được đặt bên cạnh bất kỳ bùa nào trên bàn cờ, và đá được tính là cùng loại với các bùa đặt bên cạnh nó. Ngoài ra, trong trường hợp người chơi không còn bùa trên bàn cờ nhưng chưa phủ vàng hết, bùa tiếp theo đặt lên bàn cờ sẽ là một viên đá. Tuy nhiên, người chơi chỉ được phép có 2 viên đá trên bàn cờ (mức độ khó nhất cho phép 3) và đá không nhận thêm điểm từ bùa liền kề.
+
+Sọ là bùa đặc biệt thứ hai chỉ có được ở mức trung bình trở lên. Khác với bùa bình thường và đá, sọ chỉ có thể ếm lên một ô có sẵn bùa trên đó. Ếm sọ sẽ tiêu hủy bùa phép hiện có trên ô cờ bị ảnh hướng, nhưng người chơi sẽ không được điểm từ việc ếm sọ.
+
+Trường hợp người chơi có một bùa phép không muốn sử dụng, hoặc không có vị trí nào phù hợp trên bàn cờ, người chơi có thể nhấp chuột phải để hủy bùa đó và nhận một bùa phép mới. Số lần hủy bùa cho phép của người chơi được hiển thị qua label "Forge capacity". Một khì người chơi hết lần hủy bùa, label sẽ đổi sang dòng chữ "OVERHEATING", hiển thị rằng "lò hủy" (forge) đang bị quá tải, và nếu người chơi hủy thêm một bùa nữa sẽ thua trò chơi. Để bù lại số lần hủy, người chơi có thể ếm thêm bùa lên bàn cờ hoặc sử dụng sọ. Nếu người chơi xóa sạch thành công một hàng hoặc cột, số lần hủy bùa sẽ phục hồi đầy đủ.
+
+
+Game ALC#EMY là thành phẩm của Lê Trường Long Hưng (MSSV 18520284) lấy cảm hứng từ game nguyên bản của PopCap. Ngoài Visual Studio 2017, một số phần mềm khác đã được sử dụng để xây dựng nên chương trình. MS Paint và Paint.NET đã được sử dụng để vẽ các biểu tượng bùa, Audacity để chỉnh âm thanh, Bandicam để quay clip hướng dẫn, và Sony Vegas Pro 2017 để chỉnh sửa clip. Âm nhạc cho trò chơi được soạn thảo và sáng tác bởi Peter Hajba/Skaven.
